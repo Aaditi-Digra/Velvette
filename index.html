@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Skincare Consultation</title>
+  <style>
+    :root {
+      --bg: #f9f4ef;
+      --accent: #d4b8a3;
+      --text: #3d2f2f;
+      --light: #fffaf5;
+      --peach: rgba(255, 203, 164, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem 5rem;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      flex-direction: column;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: floatUp 10s linear infinite;
+      opacity: 0.4;
+    }
+
+    .bubble.peach {
+      background: var(--peach);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .hero {
+      position: relative;
+      text-align: center;
+      width: 100%;
+      max-width: 700px;
+      padding: 0 1rem 2rem;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text);
+      animation: fadeInUp 1.5s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+    }
+
+    .question {
+      display: none;
+      word-wrap: break-word;
+    }
+
+    .question.active {
+      display: block;
+    }
+
+    .btn {
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      margin: 0.5rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #b9997d;
+    }
+
+    #resultText {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.6;
+      word-wrap: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .illustration {
+      font-size: 3rem;
+      margin: 1rem 0;
+    }
+
+    #saveBtn {
+      background-color: #a07b61;
+      color: #fff;
+      margin-top: 1.5rem;
+    }
+
+    #saveBtn:hover {
+      background-color: #8f6a52;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--light);
+      color: var(--text);
+      font-size: 0.9rem;
+      border-top: 1px solid #e5d5c6;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    @media (max-width: 500px) {
+      .btn {
+        width: 100%;
+        margin: 0.5rem 0;
+      }
+
+      .container {
+        padding: 1.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>Virtual Skincare Consultation</h1>
+    <p>Find your perfect skincare routine tailored to your needs!</p>
+  </div>
+  <div class="container">
+    <div class="question active" id="skinType">
+      <h2>What's your skin type?</h2>
+      <button class="btn" onclick="selectAnswer('skinType', 'Oily')">Oily</button>
+      <button class="btn" onclick="selectAnswer('skinType', 'Dry')">Dry</button>
+      <button class="btn" onclick="selectAnswer('skinType', 'Combination')">Combination</button>
+      <button class="btn" onclick="selectAnswer('skinType', 'Sensitive')">Sensitive</button>
+    </div>
+
+    <div class="question" id="skinConcern">
+      <h2>What's your main skin concern?</h2>
+      <button class="btn" onclick="selectAnswer('skinConcern', 'Acne')">Acne</button>
+      <button class="btn" onclick="selectAnswer('skinConcern', 'Pigmentation')">Pigmentation</button>
+      <button class="btn" onclick="selectAnswer('skinConcern', 'Aging')">Aging</button>
+      <button class="btn" onclick="selectAnswer('skinConcern', 'Dryness')">Dryness</button>
+    </div>
+
+    <div class="question" id="climate">
+      <h2>What kind of climate do you live in?</h2>
+      <button class="btn" onclick="selectAnswer('climate', 'Humid')">Humid</button>
+      <button class="btn" onclick="selectAnswer('climate', 'Dry')">Dry</button>
+      <button class="btn" onclick="selectAnswer('climate', 'Cold')">Cold</button>
+      <button class="btn" onclick="selectAnswer('climate', 'Moderate')">Moderate</button>
+    </div>
+
+    <div class="question" id="results">
+      <h2>✨ Your Personalized Routine ✨</h2>
+      <div class="illustration">🧴🌞💧</div>
+      <p id="resultText">Loading...</p>
+      <button class="btn" id="saveBtn" onclick="alert('Routine saved successfully!')">Save Routine</button>
+    </div>
+  </div>
+
+  <!-- Peach bubbles -->
+  <script>
+    for (let i = 0; i < 50; i++) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble', 'peach');
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.width = `${10 + Math.random() * 30}px`;
+      bubble.style.height = bubble.style.width;
+      bubble.style.animationDuration = `${8 + Math.random() * 5}s`;
+      document.body.appendChild(bubble);
+    }
+  </script>
+
+  <footer>
+    &copy; 2025 Velvette Skincare. All rights reserved.
+  </footer>
+
+  <script>
+    const answers = {};
+
+    function selectAnswer(question, value) {
+      answers[question] = value;
+
+      if (question === 'skinType') {
+        nextQuestion('skinConcern');
+      } else if (question === 'skinConcern') {
+        nextQuestion('climate');
+      } else if (question === 'climate') {
+        showResults();
+      }
+    }
+
+    function nextQuestion(id) {
+      document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showResults() {
+      nextQuestion('results');
+
+      const { skinType, skinConcern, climate } = answers;
+
+      let moisturizerType = skinType === 'Oily' ? 'gel-based' : 'cream-based';
+
+      let recommendation = `
+        Based on your profile:
+        <br><br>
+        <strong>Skin Type:</strong> ${skinType}<br>
+        <strong>Concern:</strong> ${skinConcern}<br>
+        <strong>Climate:</strong> ${climate}<br><br>
+        Here's what we suggest:
+        <ul>
+          <li>✔️ Gentle Cleanser for ${skinType} skin</li>
+          <li>✔️ Hydrating Toner</li>
+          <li>✔️ ${skinConcern}-focused Serum</li>
+          <li>✔️ Lightweight ${moisturizerType} Moisturizer</li>
+          <li>✔️ Broad-spectrum Sunscreen (especially in ${climate})</li>
+        </ul>
+      `;
+
+      document.getElementById("resultText").innerHTML = recommendation;
+    }
+  </script>
+</body>
+</html>
+
+
+
